@@ -12,6 +12,10 @@ RSpec.configure do |config|
   config.include Capybara::DSL
 
   config.before(:each) do
+
+    stub_request(:post, "https://github.com/login/oauth/access_token").
+  with(:body => {"client_id"=>"", "client_secret"=>"", "code"=>"20"},
+       :headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/x-www-form-urlencoded', 'User-Agent'=>'Faraday v0.9.1'})
     stub_request(:get, "https://api.github.com/user/repos").
       with(:headers => {'Authorization'=>'token 1'}).
       to_return(:status => 200, :body => [{"name" => "Repo 1", "html_url" => "http://link1.com"}, {"name" => "Repo 2", "html_url" => "http://link2.com"}, {"name" => "Repo 3", "html_url" => "http://link3.com"}].to_json, :headers => {})
@@ -29,6 +33,7 @@ RSpec.configure do |config|
       with(:body => {"{\"name\":\"a-new-repo\"}"=>true},
       :headers => {'Authorization'=>'token 1'}).
       to_return(:status => 201, :body => "", :headers => {})
+
   end
 end
 
